@@ -70,15 +70,15 @@ tasks.register<Copy>("generateMlCode") {
     into(layout.buildDirectory.dir("generated/sources/mlCode"))
 }
 
+tasks.register<JavaExec>("runExtra") {
+    classpath = extraSrc.output + extraSrc.runtimeClasspath
+    mainClass.set("Extra")
+}
+
 sourceSets {
     main {
         java {
             srcDir(tasks.named("generateMlCode"))
         }
     }
-}
-
-tasks.register<JavaExec>("runExtra") {
-    classpath = extraSrc.output + extraSrc.runtimeClasspath
-    mainClass.set("Extra")
 }
