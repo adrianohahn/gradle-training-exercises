@@ -10,9 +10,12 @@ repositories {
     mavenCentral()
 }
 
+val extraSrc = sourceSets.create("extra")
+
 dependencies {
     implementation("joda-time:joda-time:2.11.1")
     implementation("com.google.guava:guava:31.1-jre")
+    "extraImplementation"("joda-time:joda-time:2.11.1")
 }
 
 tasks.register("sourceSetsInfo") {
@@ -60,4 +63,22 @@ tasks.named<Jar>("jar") {
     } else {
         manifest.attributes["Main-Class"] = "com.gradle.lab.App"
     }
+}
+
+tasks.register<Copy>("generateMlCode") {
+    from(layout.projectDirectory.dir("../mlCodeGenTemplate"))
+    into(layout.buildDirectory.dir("generated/sources/mlCode"))
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir(tasks.named("generateMlCode"))
+        }
+    }
+}
+
+tasks.register<JavaExec>("runExtra") {
+    classpath = extraSrc.output + extraSrc.runtimeClasspath
+    mainClass.set("Extra")
 }
